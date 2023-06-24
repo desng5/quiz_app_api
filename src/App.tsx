@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import Home from "./views/Home";
 import Login from "./views/Login";
+import Register from "./views/Register";
 import UserType from "./types/auth";
 
 export default function App() {
@@ -23,10 +24,15 @@ export default function App() {
     <div>
       <Navigation isLoggedIn={isLoggedIn} logUserOut={logUserOut} />
       <div>
+       
         <Routes>
           <Route path="/" element={<Home user={loggedInUser} />} />
+          
           <Route path="/login" element={<Login logUserIn={logUserIn} />} />
+          
+          <Route path='/register' element={<Register />}/>
         </Routes>
+
       </div>
     </div>
   );
