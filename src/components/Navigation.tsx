@@ -1,22 +1,39 @@
+import { Link } from "react-router-dom"
+
 type NavigationProps = {
     isLoggedIn: boolean
-}
+    logUserOut: () => void;
+};
 
-export default function Navigation({ isLoggedIn }: NavigationProps) {
+export default function Navigation({ isLoggedIn, logUserOut }: NavigationProps) {
     return (
         <div>
-            <h5>Kekambas</h5>
+            <Link to="/">
+                <h5>Kekambas</h5>
+            </Link>
             <ol>
-                <li><a href="">Home</a></li>
+                <li>
+                    <Link to="/">Home</Link>
+                </li>
                 {isLoggedIn ? (
                     <>
-                        <li><a href="">Log Out</a></li>
-                        <li><a href="">Create Post</a></li>
+                        <li>
+                            <Link to="/" onClick={logUserOut}>
+                                Log Out
+                            </Link>
+                        </li>
+                        <li>
+                            <a href="">Create Post</a>
+                        </li>
                     </>
                 ) : (
                     <>
-                        <li><a href="">Login</a></li>
-                        <li><a href="">Sign Up</a></li>
+                        <li>
+                            <Link to="/login">Log In</Link>
+                        </li>
+                        <li>
+                            <a href="">Sign Up</a>
+                        </li>
                     </>
                 )}
             </ol>

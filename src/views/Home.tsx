@@ -1,45 +1,65 @@
-import { FormEvent, MouseEvent, useState, ChangeEvent } from "react";
-import PostForm from "../components/PostForm"
-
-type Post = {
-    id: number;
-    title: string;
-}
+import { useState, MouseEvent, FormEvent, ChangeEvent } from "react";
+import PostCard from "../components/PostCard";
+import PostForm from "../components/PostForm";
+import PostType from "../types/posts";
+import UserType from "../types/auth";
 
 type HomeProps = {
-    name: string;
-    handleClick: (e: MouseEvent) => void;
+  user: UserType | null;
+  handleClick?: (e: MouseEvent) => void;
 };
 
-export default function Home({ name, handleClick }: HomeProps) {
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [newPost, setNewPost] = useState<Post>({ id: 1, title: " " });
+export default function Home({ user }: HomeProps) {
+  const [posts, setPosts] = useState<PostType[]>([]);
+  const [newPost, setNewPost] = useState<PostType>({
+    id: 1,
+    title: "",
+    body: "",
+  });
+  const [displayForm, setDisplayForm] = useState(false);
 
-    const handleFormSubmit = (event: FormEvent): void => {
-        event.preventDefault();
+  const handleFormSubmit = (e: FormEvent): void => {
+    e.preventDefault();
 
-        setPosts([...posts, newPost]);
-        setNewPost({ id: (posts.length + 2), title: '' })
-    }
+    setPosts([...posts, newPost]);
+    setNewPost({ id: posts.length + 2, title: "", body: "" });
+    setDisplayForm(false);
+  };
 
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        console.log(event.target.name, event.target.value)
-        setNewPost({ ...newPost, [event.target.name]: event.target.value })
-    }
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    console.log(e.target.name, e.target.value);
+    setNewPost({ ...newPost, [e.target.name]: e.target.value });
+  };
 
-    return (
-        <>
-            <h1>Hello {name.toUpperCase()}</h1>
-            <button onClick={handleClick}>Log Out</button>
-            <PostForm handleSubmit={handleFormSubmit}
-                newPost={newPost}
-                handleChange={handleInputChange}
-            />
-
-            {posts.map((p) => (
-                <li key={p.id}>{p.title}</li>
-            ))}
-            <button onClick={() => {setPosts([])}}>Clear All Posts</button>
-        </>
-    );
+  return (
+    <>
+      <h1>
+        Hello {user?.firstName} {user?.lastName}
+      </h1>
+      {user && (
+        <button
+          onClick={() => {
+            setDisplayForm(!displayForm);
+          }}>
+          {displayForm ? "Close X" : "Compose +"}
+        </button>
+      )}
+      {displayForm && (
+        <PostForm
+          handleSubmit={handleFormSubmit}
+          newPost={newPost}
+          handleChange={handleInputChange}
+        />
+      )}
+      {posts.map((p) => (
+        <PostCard key={p.id} post={p} />
+      ))}
+      <button
+        onClick={() => {
+          setPosts([]);
+        }}>
+        Clear All Posts
+      </button>
+    </>
+  );
 }

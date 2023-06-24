@@ -1,28 +1,33 @@
-import { useState, MouseEvent } from "react";
-import Navigation from './components/Navigation';
-import Home from './views/Home'
-import LoggedOut from './views/LoggedOut'
-
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Navigation from "./components/Navigation";
+import Home from "./views/Home";
+import Login from "./views/Login";
+import UserType from "./types/auth";
 
 export default function App() {
-  const [isLoggedIn, setLoggedIn] = useState(false)
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<UserType | null>(null);
 
-  const name: string = 'Brian';
+  const logUserIn = (user: UserType): void => {
+    setLoggedIn(true);
+    setLoggedInUser(user);
+  };
 
-  const handleClick = (_: MouseEvent): void => {
-    setLoggedIn(!isLoggedIn)
-  }
+  const logUserOut = (): void => {
+    setLoggedIn(false);
+    setLoggedInUser(null);
+  };
 
   return (
     <div>
-      <Navigation isLoggedIn={isLoggedIn} />
+      <Navigation isLoggedIn={isLoggedIn} logUserOut={logUserOut} />
       <div>
-        {isLoggedIn ? (
-          <Home name={name} handleClick={handleClick}/>
-        ) : (
-          <LoggedOut handleClick={handleClick} />
-        )}
+        <Routes>
+          <Route path="/" element={<Home user={loggedInUser} />} />
+          <Route path="/login" element={<Login logUserIn={logUserIn} />} />
+        </Routes>
       </div>
     </div>
-  )
+  );
 }
