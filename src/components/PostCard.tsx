@@ -10,7 +10,7 @@ export default function PostCard ({ post}: PostCardProps) {
             <div>
                 <div>{post.title}</div>
                 <div>{post.body}</div>
-                <div>By user</div>
+                <div>By {post.author?.firstName} {post.author?.lastName}</div>
                 <div>Date Created:</div>
             </div>
         </div>

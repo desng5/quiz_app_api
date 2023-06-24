@@ -21,7 +21,8 @@ export default function Home({ user }: HomeProps) {
   const handleFormSubmit = (e: FormEvent): void => {
     e.preventDefault();
 
-    setPosts([...posts, newPost]);
+    const newPostWithAuthor = { ...newPost, author:user! }
+    setPosts([...posts, newPostWithAuthor]);
     setNewPost({ id: posts.length + 2, title: "", body: "" });
     setDisplayForm(false);
   };
