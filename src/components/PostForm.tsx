@@ -1,5 +1,5 @@
 import { FormEvent, ChangeEvent } from "react"
-import PostType from "../types/posts";
+import PostType from "../types/post";
 
 type PostFormProps = {
     handleSubmit: (e: FormEvent) => void
