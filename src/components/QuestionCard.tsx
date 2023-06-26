@@ -28,12 +28,12 @@ export default function QuestionCard({
   return (
     <div className="mt-3">
       <div>
-        <div>{question.title}</div>
-        <div>{question.body}</div>
+        <div>{question.question}</div>
+        <div>{question.answer}</div>
         <div>
           By {question.author?.firstName} {question.author?.lastName}
         </div>
-        <div>Date Created: {DataTransfer.toString()}</div>
+        <div>Date Created: {new Date(question.created_on!).toString()}</div>
       </div>
 
       {question.author ===

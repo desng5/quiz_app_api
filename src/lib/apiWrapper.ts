@@ -43,10 +43,10 @@ async function getAllQuestions(): Promise<APIResponse<QuestionType[]>> {
   let error;
   let data;
   try {
-    const response: AxiosResponse<QuestionType[]> = await apiClientNoAuth().get(
+    const response: AxiosResponse<{questions: QuestionType[]}> = await apiClientNoAuth().get(
       allQuestions
     );
-    data = response.data;
+    data = response.data.questions
   } catch (err) {
     if (axios.isAxiosError(err)) {
       error = err.response?.data.error;

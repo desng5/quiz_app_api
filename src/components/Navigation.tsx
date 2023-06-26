@@ -12,7 +12,7 @@ export default function Navigation({
   return (
     <div>
       <Link to="/">
-        <h5>Kekambas</h5>
+        <h5>Quiz Wiz App</h5>
       </Link>
       <ol>
         <li>
@@ -24,9 +24,6 @@ export default function Navigation({
               <Link to="/" onClick={logUserOut}>
                 Log Out
               </Link>
-            </li>
-            <li>
-              <a href="">Create Post</a>
             </li>
           </>
         ) : (

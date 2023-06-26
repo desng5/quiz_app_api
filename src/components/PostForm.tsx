@@ -17,16 +17,16 @@ export default function PostForm({
       <label>Title</label>
       <input
         type="text"
-        name="title"
+        name="question"
         onChange={handleChange}
-        value={newPost.title}
+        value={newPost.question}
       />
       <label>Body</label>
       <input
         type="text"
-        name="body"
+        name="answer"
         onChange={handleChange}
-        value={newPost.body}
+        value={newPost.answer}
       />
       <button type="submit">Create Post</button>
     </form>
