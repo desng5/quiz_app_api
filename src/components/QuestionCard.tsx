@@ -23,7 +23,7 @@ export default function QuestionCard({
     deleteQuestion(question.id!, token!);
       setUpdate(!update)
     };
-  };
+  
 
   return (
     <div className="mt-3">
