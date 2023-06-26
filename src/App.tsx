@@ -5,7 +5,7 @@ import Home from "./views/Home";
 import Login from "./views/Login";
 import UserType from "./types/auth";
 import Register from "./views/Register";
-import { getMe } from "./lib/apiWrapper";
+// import { getMe } from "./lib/apiWrapper";
 
 export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(
@@ -15,16 +15,16 @@ export default function App() {
   );
   const [loggedInUser, setLoggedInUser] = useState<UserType | null>(null);
 
-  useEffect(() => {
-    const getLoggedInUser = async () => {
-      const token = localStorage.getItem("token");
-      const response = await getMe(token!);
-      setLoggedInUser(response.data!);
-    };
-    if (isLoggedIn) {
-      getLoggedInUser();
-    }
-  }, []);
+  // useEffect(() => {
+  //   const getLoggedInUser = async () => {
+  //     const token = localStorage.getItem("token");
+  //     const response = await getMe(token!);
+  //     setLoggedInUser(response.data!);
+  //   };
+  //   if (isLoggedIn) {
+  //     getLoggedInUser();
+  //   }
+  // }, []);
 
   const logUserIn = (user: UserType): void => {
     setLoggedIn(true);

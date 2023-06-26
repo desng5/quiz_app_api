@@ -1,88 +1,79 @@
-import { useState, useEffect, MouseEvent, FormEvent, ChangeEvent } from "react";
-import PostCard from "../components/PostCard";
-import PostForm from "../components/PostForm";
-import PostType from "../types/post";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
+import QuestionCard from "../components/QuestionCard";
+import QuestionType from "../types/question";
 import UserType from "../types/auth";
-import { getAllPosts, createPost } from "../lib/apiWrapper";
+import { getAllQuestions, createQuestion } from "../lib/apiWrapper";
 
 type HomeProps = {
   user: UserType | null;
-  handleClick?: (e: MouseEvent) => void;
 };
 
 export default function Home({ user }: HomeProps) {
-  const [posts, setPosts] = useState<PostType[]>([]);
-  const [newPost, setNewPost] = useState<PostType>({ title: "", body: "" });
-  const [displayForm, setDisplayForm] = useState(false);
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
+  // const [displayForm, setDisplayForm] = useState(false);
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getAllPosts();
+      const response = await getAllQuestions();
       if (response.data) {
-        setPosts(response.data);
+        setQuestions(response.data);
       }
     };
     fetchData();
   }, [update]);
 
-  const handleFormSubmit = async (e: FormEvent): Promise<void> => {
-    e.preventDefault();
+  // const handleFormSubmit = async (e: FormEvent): Promise<void> => {
+  //   e.preventDefault();
 
-    const token = localStorage.getItem("token");
-    const response = await createPost(newPost, token!);
-    if (response.error) {
-      console.log(response.error);
-    } else {
-      const response = await getAllPosts();
-      if (response.data) {
-        setPosts(response.data);
-      }
-      setUpdate(!update);
-      setNewPost({ title: "", body: "" });
-      setDisplayForm(false);
-      console.log(newPost.title + " has been created");
-    }
-  };
+  //   const token = localStorage.getItem("token");
+  //   const response = await createQuestion(newQuestion, token!);
+  //   if (response.error) {
+  //     console.log(response.error);
+  //   } else {
+  //     const response = await getAllQuestions();
+  //     if (response.data) {
+  //       setQuestions(response.data);
+  //     }
+  //     setUpdate(!update);
+  //     setNewQuestion({ title: "", body: "" });
+  //     setDisplayForm(false);
+  //     console.log(newQuestion.title + " has been created");
+  //   }
+  // };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setNewPost({ ...newPost, [e.target.name]: e.target.value });
-  };
+  // const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+  //   setNewQuestion({ ...newQuestion, [e.target.name]: e.target.value });
+  // };
 
   return (
     <>
       <h1>
         Hello {user?.firstName} {user?.lastName}
       </h1>
-      {user && (
+      {/* {user && (
         <button
           onClick={() => {
             setDisplayForm(!displayForm);
           }}>
           {displayForm ? "Close X" : "Compose +"}
         </button>
-      )}
-      {displayForm && (
-        <PostForm
-          handleSubmit={handleFormSubmit}
-          newPost={newPost}
-          handleChange={handleInputChange}
-        />
-      )}
-      {posts.map((p) => (
-        <PostCard
-          key={p.id}
-          post={p}
-          user={user}
-          setUpdate={setUpdate}
-          update={update}
-        />
-      ))}
+      )} */}
+      {Array.isArray(questions) &&
+        questions.map((question) => (
+          <QuestionCard
+            key={question.id}
+            question={question}
+            update={update}
+            setUpdate={setUpdate}
+            user={user}
+          />
+        ))}
       <button
         onClick={() => {
-          setPosts([]);
+          setQuestions([]);
         }}>
-        Clear All Posts
+        Clear All Questions
       </button>
     </>
   );

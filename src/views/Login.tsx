@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import UserType from "../types/auth";
-import { login, getMe } from "../lib/apiWrapper";
+import { login } from "../lib/apiWrapper";
 
 type LoginProps = {
   logUserIn: (user: UserType) => void;
@@ -10,20 +10,20 @@ type LoginProps = {
 export default function Login({ logUserIn }: LoginProps) {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserType>({
-    id: 1,
-    username: "",
+    email: "",
     password: "",
   });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
+
   const handleFormSubmit = async (
     e: FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
 
-    const response = await login(user.username, user.password!);
+    const response = await login(user.email!, user.password!);
     if (response.error) {
       console.log(response.error);
     } else {
@@ -32,14 +32,10 @@ export default function Login({ logUserIn }: LoginProps) {
         "tokenExp",
         response.data?.token_expiration as string
       );
-      const token = localStorage.getItem("token");
-      const userResponse = await getMe(token as string);
-      if (userResponse.error) {
-        console.log(userResponse.error);
-      } else {
-        logUserIn(userResponse.data!);
-        navigate("/");
-      }
+      // const { password, ...userData } = response.data;
+      const { ...userData } = response.data;
+      logUserIn(userData);
+      navigate("/");
     }
   };
 
@@ -47,12 +43,12 @@ export default function Login({ logUserIn }: LoginProps) {
     <>
       <h1>Log In</h1>
       <form onSubmit={handleFormSubmit}>
-        <label>Username</label>
+        <label>Email</label>
         <input
           type="text"
-          name="username"
+          name="email"
           onChange={handleInputChange}
-          value={user.username}
+          value={user.email}
         />
         <label>Password</label>
         <input

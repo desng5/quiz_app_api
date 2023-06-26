@@ -1,10 +1,12 @@
 import axios, { AxiosResponse } from "axios";
-import PostType from "../types/post";
+import QuestionType from "../types/question";
 import UserType from "../types/auth";
 
-const base = "https://cae-bookstore.herokuapp.com/";
-const postEndpoint = "/posts";
-const userEndpoint = "/users";
+const base = "https://cae-bookstore.herokuapp.com";
+const loginEndpoint = "/login";
+const userEndpoint = "/user";
+const questionEndpoint = "/question";
+const allQuestions = "/question/all";
 
 const apiClientNoAuth = () =>
   axios.create({
@@ -15,7 +17,7 @@ const apiClientBasicAuth = (username: string, password: string) =>
   axios.create({
     baseURL: base,
     headers: {
-      Authorization: "Bearer " + btoa(username + ":" + password),
+      Authorization: "Basic " + btoa(username + ":" + password),
     },
   });
 
@@ -37,17 +39,17 @@ type TokenType = {
   token_expiration: string;
 };
 
-async function getAllPosts(): Promise<APIResponse<PostType[]>> {
+async function getAllQuestions(): Promise<APIResponse<QuestionType[]>> {
   let error;
   let data;
   try {
-    const response: AxiosResponse<PostType[]> = await apiClientNoAuth.get(
-      postEndpoint
+    const response: AxiosResponse<QuestionType[]> = await apiClientNoAuth().get(
+      allQuestions
     );
     data = response.data;
   } catch (err) {
     if (axios.isAxiosError(err)) {
-      error = err.message;
+      error = err.response?.data.error;
     } else {
       error = "Something went wrong";
     }
@@ -64,7 +66,12 @@ async function register(newUser: UserType): Promise<APIResponse<UserType>> {
   try {
     const response: AxiosResponse<UserType> = await apiClientNoAuth().post(
       userEndpoint,
-      newUser
+      {
+        email: newUser.email,
+        first_name: newUser.firstName,
+        last_name: newUser.lastName,
+        password: newUser.password,
+      }
     );
     data = response.data;
   } catch (err) {
@@ -81,16 +88,16 @@ async function register(newUser: UserType): Promise<APIResponse<UserType>> {
 }
 
 async function login(
-  username: string,
+  email: string,
   password: string
-): Promise<APIResponse<TokenType>> {
+): Promise<APIResponse<UserType>> {
   let error;
   let data;
   try {
-    const response: AxiosResponse<TokenType> = await apiClientBasicAuth(
-      username,
+    const response: AxiosResponse<UserType> = await apiClientBasicAuth(
+      email,
       password
-    ).get("/token");
+    ).get(loginEndpoint);
     data = response.data;
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -105,37 +112,16 @@ async function login(
   };
 }
 
-async function getMe(token: string): Promise<APIResponse<UserType>> {
-  let error;
-  let data;
-  try {
-    const response: AxiosResponse<UserType> = await apiClientTokenAuth(
-      token
-    ).get("/me");
-    data = response.data;
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      error = err.response?.data.error;
-    } else {
-      error = "Something went wrong";
-    }
-  }
-  return {
-    error,
-    data,
-  };
-}
-
-async function createPost(
-  newPost: PostType,
+async function createQuestion(
+  newQuestion: QuestionType,
   token: string
-): Promise<APIResponse<PostType>> {
+): Promise<APIResponse<QuestionType>> {
   let error;
   let data;
   try {
-    const response: AxiosResponse<PostType> = await apiClientTokenAuth(
+    const response: AxiosResponse<QuestionType> = await apiClientTokenAuth(
       token
-    ).post(postEndpoint, newPost);
+    ).post(questionEndpoint, newQuestion);
     data = response.data;
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -150,15 +136,17 @@ async function createPost(
   };
 }
 
-async function deletePost(
-  postId: number,
+async function deleteQuestion(
+  questionId: number,
   token: string
 ): Promise<APIResponse<string>> {
   let error;
   let data;
   try {
     const response: AxiosResponse<{ success: string }> =
-      await apiClientTokenAuth(token).delete(postEndpoint + "/" + postId);
+      await apiClientTokenAuth(token).delete(
+        questionEndpoint + "/" + questionId
+      );
     data = response.data.success;
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -173,4 +161,10 @@ async function deletePost(
   };
 }
 
-export { getAllPosts, register, login, getMe, createPost, deletePost };
+export {
+  getAllQuestions,
+  register,
+  login,
+  createQuestion,
+  deleteQuestion,
+};
